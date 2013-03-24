@@ -1,0 +1,14 @@
+{
+  	"name": "nodejs_pocjet_monster",
+	"author": "LeDucSAS",
+	"description": "Little worlds, families and monsters manager.",
+  	"version": "0.0.1",
+  	"dependencies": {
+    	"colors": "0.6.x",
+		"prototype": "0.0.5",
+		"socket.io": "0.9.13"
+  },
+  "engines": {
+        "node": "0.10.1"
+    }
+}
