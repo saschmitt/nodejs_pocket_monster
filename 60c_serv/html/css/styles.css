@@ -1,0 +1,57 @@
+html{
+	background-color: #987654;
+	height:100%;}
+	body {
+		font-family: arial, sans-serif;
+		font-size: 16px;
+		font-style: normal;
+		color: #ddd;
+		height:100%;}
+		h1,h2,h3,h4{
+			color: #ddd;
+			border-bottom: 1px dashed #ddd;
+			text-align: center;}
+
+/*************************/
+/*************************/
+/*************************/
+/*************************/
+input {
+	background-color: rgba(150,150,150,0.2);
+	border: 3px solid rgba(150,150,150,0.5);
+	height: 35px;
+	border-radius: 50px;
+	color: #fff;}
+	input:hover {
+		background-color: rgba(0,255,255,0.2);
+		border: 3px solid rgba(0,255,255,0.5);}
+hr {
+	color: #876543;}
+/*************************/
+/*************************/
+/*************************/
+/*************************/
+.container{
+	height:50%;
+	background-color: #987654;
+	border: 1px dashed #654321;
+	overflow-y: scroll;
+	text-align:center;}
+	.container > div {
+		border-bottom: 1px dashed #876543;
+		cursor: pointer;}
+		.container > div > p {
+			margin:0;}
+		.selection {
+			background-color: #abcdef;
+			color: #123456;}
+#boutons {
+	text-align: center;
+}
+/*************************/
+/*************************/
+/*************************/
+.joueur_actif{
+	color : #fff;
+	text-decoration : underline;
+}
