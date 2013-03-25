@@ -1,9 +1,13 @@
+/* Modules */
+var colors								= require("colors");
+var prototypejs							= require('prototype'); 
+Object.extend(global, prototypejs);
 var server								= require("./server");
 var router								= require("./router");
 var requestHandlers						= require("./requestHandlers");
-var colors								= require("colors");
 var messages							= require("./messages");
 
+/* Variables */
 var handle								= {};
 
 /************
