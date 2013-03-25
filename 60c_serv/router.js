@@ -13,7 +13,7 @@
 	}
 }
 
-exports.route 							= route;
+exports.route							= route;
 
 
 

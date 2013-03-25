@@ -45,7 +45,7 @@ hr {
 		.selection {
 			background-color: #abcdef;
 			color: #123456;}
-#boutons {
+.boutons {
 	text-align: center;
 }
 /*************************/
@@ -54,4 +54,8 @@ hr {
 .joueur_actif{
 	color : #fff;
 	text-decoration : underline;
+}
+.listeItem:hover{
+	background-color: #fedbca;
+	color: #123456;
 }

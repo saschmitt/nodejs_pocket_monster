@@ -12,49 +12,49 @@
 			<p>Optimisé pour Firefox 19.0.2.
 			</p>
 			<h1>RPG Soixante Circuits</h1>
+			<input type="button" value="Actualiser" id="Actualiser" />
 		</div>
 		<div class="clear"></div>
 		
 <!-- ********************************** -->
 		<div id="contenu">
-			<div class="grid_6">
-				<h2>Gérer des mondes</h2>
+			<div class="grid_3">
+				<h2>Mondes</h2>
 				
 				<div id="gestionMonde_liste" class="container">
-					<div>
-						<p>Monde 1</p>
-					</div>
-					<div>
-						<p>Monde 2</p>
-					</div>
-					<div>
-						<p>Monde 3</p>
-					</div>
-					<div class="selection">
-						<p>Monde 4</p>
-					</div>
-					<div>
-						<p>Monde 5</p>
-					</div>
-					<div>
-						<p>Monde 6</p>
-					</div>
-					<div>
-						<p>Monde 7</p>
-					</div>
-					<div>
-						<p>Monde 8</p>
-					</div>
 				</div>
-				<div id="boutons">
-					<input type="button" value="Créer" />
-					<input type="button" value="Gérer" />
-					<input type="button" value="Rejoindre" />
+				
+				<div class="boutons">
+					<input type="button" id="creerMonde" value="Créer" />
+					<input type="button" id="supprimerMonde" value="Supprimer" />
 				</div>
 			</div>
 			
-			<div class="grid_6">
-				<h2>Image du monde</h2>
+			<div class="grid_3">
+				<h2>Familles</h2>
+				
+				<div id="gestionFamille_liste" class="container">
+				</div>
+				
+				<div class="boutons">
+					<input type="button" id="creerFamille" value="Créer" />
+					<input type="button" id="supprimerFamille" value="Supprimer" />
+				</div>
+			</div>
+			<div class="grid_3">
+				<h2>Monstres</h2>
+				
+				<div id="gestionMonstre_liste" class="container">
+				</div>
+				
+				<div class="boutons">
+					<input type="button" id="creerMonstre" value="Créer" />
+					<input type="button" id="supprimerMonstre" value="Supprimer" />
+				</div>
+			</div>
+			
+			<div class="grid_3">
+				<h2>Image de l'élément</h2>
 				
 				<p>ici une image
 				</p>
@@ -65,9 +65,10 @@
 		
 <!-- ********************************** -->
 
-		<script src="./js/jquery-1.9.1.js"></script>
-		<script src="./js/mustache.js"></script>
-		<script src="./js/client.js"></script>
+		<script type="text/javascript" src="./js/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="./js/mustache.js"></script>
+		<script src="http://localhost:80/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="./js/client.js"></script>
 		
 <!-- ********************************** -->
 

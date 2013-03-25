@@ -1,10 +1,10 @@
-var server 								= require("./server");
-var router 								= require("./router");
-var requestHandlers 					= require("./requestHandlers");
-var colors 								= require("colors");
-var messages 							= require("./messages");
+var server								= require("./server");
+var router								= require("./router");
+var requestHandlers						= require("./requestHandlers");
+var colors								= require("colors");
+var messages							= require("./messages");
 
-var handle 								= {};
+var handle								= {};
 
 /************
 *************
@@ -13,9 +13,9 @@ var handle 								= {};
 **
 *************
 ************/
-handle["/"] 							= requestHandlers.index;
-handle["/index"] 						= requestHandlers.index;
-handle["/index.html"] 					= requestHandlers.index;
+handle["/"]								= requestHandlers.index;
+handle["/index"]						= requestHandlers.index;
+handle["/index.html"]					= requestHandlers.index;
 
 /**************
 ***************
@@ -24,10 +24,10 @@ handle["/index.html"] 					= requestHandlers.index;
 **
 ***************
 **************/
-handle["/css/normalize.css"] 			= requestHandlers.normalize;
-handle["/css/grid.css"] 				= requestHandlers.grid;
-handle["/css/animations.css"] 			= requestHandlers.animations;
-handle["/css/styles.css"] 				= requestHandlers.styles;
+handle["/css/normalize.css"]			= requestHandlers.normalize;
+handle["/css/grid.css"]					= requestHandlers.grid;
+handle["/css/animations.css"]			= requestHandlers.animations;
+handle["/css/styles.css"]				= requestHandlers.styles;
 
 /*********************
 **********************
@@ -36,8 +36,8 @@ handle["/css/styles.css"] 				= requestHandlers.styles;
 **
 **********************
 *********************/
-handle["/js/jquery-1.9.1.js"] 			= requestHandlers.jquery;
-handle["/js/mustache.js"] 				= requestHandlers.mustache;
-handle["/js/client.js"] 				= requestHandlers.client;
+handle["/js/jquery-1.9.1.js"]			= requestHandlers.jquery;
+handle["/js/mustache.js"]				= requestHandlers.mustache;
+handle["/js/client.js"]					= requestHandlers.client;
 
 server.index(router.route, handle);

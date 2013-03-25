@@ -1,6 +1,6 @@
-﻿var querystring 						= require("querystring");
-var fs 									= require("fs");
-var formidable 							= require("formidable");
+﻿var querystring							= require("querystring");
+var fs									= require("fs");
+var formidable							= require("formidable");
 
 function index(response) {
 	
@@ -156,16 +156,16 @@ function client(response) {
 **********
 *********/
 /* HTML */
-exports.index 							= index;
+exports.index							= index;
 /* CSS */
-exports.normalize 						= normalize;
-exports.grid 							= grid;
-exports.animations 						= animations;
-exports.styles 							= styles;
+exports.normalize						= normalize;
+exports.grid							= grid;
+exports.animations						= animations;
+exports.styles							= styles;
 /* JavaScript */
-exports.jquery 							= jquery;
-exports.mustache 						= mustache;
-exports.client 							= client;
+exports.jquery							= jquery;
+exports.mustache						= mustache;
+exports.client							= client;
 
 
 
