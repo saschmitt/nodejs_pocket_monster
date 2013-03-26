@@ -32,20 +32,30 @@ function index(route, handle){
 		/* Mondes */
 		socket.on('demandeMonde', function(){
 			for (var i = 0; i < mondes.length; i++ ){
-				console.log(mondes[i].getNom());
-				socket.emit('recupereMonde', mondes[i].getNom());
+				var idMonde = i;
+				var nomMonde = mondes[i].getNom();
+				socket.emit('recupereMonde', idMonde, nomMonde);
 			}
 		});
 		
 		/* Familles */
-		socket.on('demandeFamille', function(){
-			for (var i = 0; i < mondes.length; i++ ){
-				console.log(mondes[i].getNom());
-				socket.emit('recupereFamille', mondes[i].getNom());
+		socket.on('demandeFamille', function(idMonde){
+			for (var i = 0; i < mondes[idMonde].familles.length; i++ ){
+				var idFamille = i;
+				var nomFamille = mondes[idMonde].familles[i].getNom();
+				socket.emit('recupereFamille', idFamille, nomFamille);
+			}
+		});
+		
+		/* Monstres */
+		socket.on('demandeMonstre', function(idMonde, idFamille){
+			for (var i = 0; i < mondes[idMonde].familles[idFamille].monstres.length; i++ ){
+				var idMonstre = i;
+				var nomMonstre = mondes[idMonde].familles[idFamille].monstres[i].getNom();
+				socket.emit('recupereMonstre', idMonstre, nomMonstre);
 			}
 		});
 	});
-	
 }
 
 
