@@ -3,13 +3,34 @@
 	// Mode strict
 	// 'use strict';
 	
-	/* Templates et divers */
+	  /***********************/
+	 /* Templates et divers */
+	/***********************/
 	var contenu 						= {};
 	var templateListeItem 				= '<div class="listeItem" id="{{id}}"><p>{{nom}}</p></div>';
-	
+	var templateCreationMonde 			= '<h2>Création</h2>'
+				+'<form>'
+					+'Création de Monde.'
+					+'<input type="text" id="nomMonde" placeholder="Entrez le nom" />'
+					+'<input type="button" id="creerMonde" value="Créer" />'
+				+'</form>';
+	var templateCreationFamille 		= '<h2>Création</h2>'
+				+'<form>'
+					+'Création de Famille.'
+					+'<input type="text" id="nomFamille" placeholder="Entrez le nom" />'
+					+'<input type="text" id="nbMonstresMax" placeholder="nb monstres max" />'
+					+'<input type="button" id="creerFamille" value="Créer" />'
+				+'</form>';
+	var templateCreationMonstre 		= '<h2>Création</h2>'
+				+'<form>'
+					+'Création de Monstre.'
+					+'<input type="text" id="nomMonstre" placeholder="Entrez le nom" />'
+					+'<input type="text" id="origineMonstre" placeholder="Origine du monstre" />'
+					+'<input type="button" id="creerFamille" value="Créer" />'
+				+'</form>';
 	
 	/* Code socket */
-	var socket 							= io.connect('http://localhost:80');
+	var socket 							= io.connect();
 	
 	
 	/*******************
@@ -17,109 +38,184 @@
 	** AFFICHAGE CONTENU
 	**
 	*******************/
-	/************************/
-	/* Récupérer les mondes */
-	/************************/
-	socket.emit('demandeMonde');
-	
-	socket.on('recupereMonde', function(idMonde, nomMonde){
-		contenu.id 						= idMonde;
-		contenu.nom 					= nomMonde;
-		$('#gestionMonde_liste').append(Mustache.render(templateListeItem, contenu));
-	});
-	
-	/**************************/
-	/* Récupérer les familles */
-	/**************************/
-	$('#gestionMonde_liste').on('click', '.listeItem', function(event){
-			/* Changer la sélection */
-		$('#gestionMonde_liste .selection').removeClass('selection');
-		$(this).addClass('selection');
+		  /************************/
+		 /* Récupérer les mondes */
+		/************************/
+		recuperer('mondes');
+		socket.on('recupereMonde', function(contenu){
+			$('#gestionMonde_liste').append(Mustache.render(templateListeItem, contenu));
+		});
 		
-			/* Effacer les familles */
-		$('#gestionFamille_liste').empty();
-		$('#gestionMonstre_liste').empty();
+		  /**************************/
+		 /* Récupérer les familles */
+		/**************************/
+		$('#gestionMonde_liste').on('click', '.listeItem', function(event){
+				/* Changer la sélection */
+			$('#gestionMonde_liste .selection').removeClass('selection');
+			$(this).addClass('selection');
+			
+			recuperer('familles');
+		});
+		socket.on('recupereFamille', function(contenu){
+			$('#gestionFamille_liste').append(Mustache.render(templateListeItem, contenu));
+		});
 		
-			/* Récupérer l'ID du monde sélectionné et l'envoyer au serveur */
-		idMonde 						= $(this).prop("id");
-		socket.emit('demandeFamille', idMonde);
-	});
-	
-	socket.on('recupereFamille', function(idFamille, nomFamille){
-		contenu.id 						= idFamille;
-		contenu.nom 					= nomFamille;
-		$('#gestionFamille_liste').append(Mustache.render(templateListeItem, contenu));
-	});
-	
-	/**************************/
-	/* Récupérer les monstres */
-	/**************************/
-	$('#gestionFamille_liste').on('click', '.listeItem', function(event){
-			/* Changer la sélection */
-		$('#gestionFamille_liste .selection').removeClass('selection');
-		$(this).addClass('selection');
+		  /**************************/
+		 /* Récupérer les monstres */
+		/**************************/
+		$('#gestionFamille_liste').on('click', '.listeItem', function(event){
+				/* Changer la sélection */
+			$('#gestionFamille_liste .selection').removeClass('selection');
+			$(this).addClass('selection');
+			
+			recuperer('monstres');
+		});
+		socket.on('recupereMonstre', function(contenu){
+			$('#gestionMonstre_liste').append(Mustache.render(templateListeItem, contenu));
+		});
+		  /*********************/
+		 /* Sélection monstre */
+		/*********************/
+		$('#gestionMonstre_liste').on('click', '.listeItem', function(event){
+				/* Changer la sélection */
+			$('#gestionMonstre_liste .selection').removeClass('selection');
+			$(this).addClass('selection');
+		});
 		
-			/* Effacer les monstres */
-		$('#gestionMonstre_liste').empty();
+		  /*************/
+		 /* Affichage */
+		/*************/
+		socket.on('afficherMonde', function(){
+			recuperer('mondes');
+		});
+		socket.on('afficherFamille', function(){
+			recuperer('familles');
+		});
+		socket.on('afficherMonstre', function(){
+			recuperer('monstres');
+		});
 		
-			/* Récupérer l'ID du monde et de la famille et l'envoyer au serveur */
-		var idMonde 					= $('#gestionMonde_liste .selection').prop("id");
-		var idFamille 					= $('#gestionFamille_liste .selection').prop("id");
-		socket.emit('demandeMonstre', idMonde, idFamille);
-	});
 	
-	socket.on('recupereMonstre', function(idMonstre, nomMonstre){
-		contenu.id 						= idMonstre;
-		contenu.nom 					= nomMonstre;
-		$('#gestionMonstre_liste').append(Mustache.render(templateListeItem, contenu));
-	});
-	
-	
-	$('#gestionMonstre_liste').on('click', '.listeItem', function(event){
-			/* Changer la sélection */
-		$('#gestionMonstre_liste .selection').removeClass('selection');
-		$(this).addClass('selection');
-	});
-		
 	/*********************
 	**
 	** SUPPRESSION CONTENU
 	**
 	*********************/
-	/*******************/
-	/* Supprimer monde */
-	/*******************/
-	$('#supprimerMonde').on('click', function(event){
-		var idMonde 					= $('#gestionMonde_liste .selection').prop("id");
-		socket.emit('aSupprimerMonde', idMonde);
-	});
-	socket.on('okSupprimerMonde', function(idMonde){
-		$('#gestionMonstre_liste').empty();
-		$('#gestionFamille_liste').empty();
-		$('#gestionMonde_liste #'+idMonde).remove();
-	});
-	/*********************/
-	/* Supprimer famille */
-	/*********************/
-	$('#supprimerFamille').on('click', function(event){
-		var idMonde 					= $('#gestionMonde_liste .selection').prop("id");
-		var idFamille 					= $('#gestionFamille_liste .selection').prop("id");
-		socket.emit('aSupprimerFamille', idMonde, idFamille);
-	});
-	socket.on('okSupprimerFamille', function(idFamille){
-		$('#gestionMonstre_liste').empty();
-		$('#gestionFamille_liste #'+idFamille).remove();
-	});
-	/*********************/
-	/* Supprimer monstre */
-	/*********************/
-	$('#supprimerMonstre').on('click', function(event){
-		var idMonde 					= $('#gestionMonde_liste .selection').prop("id");
-		var idFamille 					= $('#gestionFamille_liste .selection').prop("id");
-		var idMonstre					= $('#gestionMonstre_liste .selection').prop("id");
-		socket.emit('aSupprimerMonstre', idMonde, idFamille, idMonstre);
-	});
-	socket.on('okSupprimerMonstre', function(idMonstre){
-		$('#gestionMonstre_liste #'+idMonstre).remove();
-	});
+		  /*******************/
+		 /* Supprimer monde */
+		/*******************/
+		$('#supprimerMonde').on('click', function(event){
+			var aSupprimer 					= {};
+			aSupprimer.idMonde 				= $('#gestionMonde_liste .selection').prop("id");
+			socket.emit('aSupprimerMonde', aSupprimer);
+		});
+		  /*********************/
+		 /* Supprimer famille */
+		/*********************/
+		$('#supprimerFamille').on('click', function(event){
+			var aSupprimer 					= {};
+			aSupprimer.idMonde 				= $('#gestionMonde_liste .selection').prop("id");
+			aSupprimer.idFamille 			= $('#gestionFamille_liste .selection').prop("id");
+			socket.emit('aSupprimerFamille', aSupprimer);
+		});
+		  /*********************/
+		 /* Supprimer monstre */
+		/*********************/
+		$('#supprimerMonstre').on('click', function(event){
+			var aSupprimer 					= {};
+			aSupprimer.idMonde 				= $('#gestionMonde_liste .selection').prop("id");
+			aSupprimer.idFamille 			= $('#gestionFamille_liste .selection').prop("id");
+			aSupprimer.idMonstre 			= $('#gestionMonstre_liste .selection').prop("id");
+			socket.emit('aSupprimerMonstre', aSupprimer);
+		});
+	
+	
+	/**********************
+	**
+	** RECUPERATION CONTENU
+	**
+	**********************/
+		function recuperer(cible){
+			var idMonde 					= $('#gestionMonde_liste .selection').prop("id");
+			var idFamille 					= $('#gestionFamille_liste .selection').prop("id");
+			var idMonstre 					= $('#gestionMonstre_liste .selection').prop("id");
+			if (cible == 'mondes'){
+				$('#gestionMonde_liste').empty();
+				$('#gestionFamille_liste').empty();
+				$('#gestionMonstre_liste').empty();
+				socket.emit('demandeMonde');
+			} else if (cible == 'familles') {
+				$('#gestionFamille_liste').empty();
+				$('#gestionMonstre_liste').empty();
+				socket.emit('demandeFamille', idMonde);
+			} else if (cible == 'monstres') {
+				$('#gestionMonstre_liste').empty();
+				socket.emit('demandeMonstre', idMonde, idFamille);
+			}
+		}
+	
+	
+	/******************
+	**
+	** CREATION CONTENU
+	**
+	******************/
+		  /**********************/
+		 /* Détection du click */
+		/**********************/
+		$('#creerFormMonde').on('click', function(event){
+			creerForm('monde');
+		});
+		$('#creerFormFamille').on('click', function(event){
+			creerForm('famille');
+		});
+		$('#creerFormMonstre').on('click', function(event){
+			creerForm('monstre');
+		});
+		  /***********************************/
+		 /* Fonction d'insertion du contenu */
+		/***********************************/
+		function creerForm(cible){
+			if(cible === 'monde'){
+				$('#zoneCreation').empty();
+				$('#zoneCreation').append(templateCreationMonde);
+			} else if (cible === 'famille'){
+				$('#zoneCreation').empty();
+				$('#zoneCreation').append(templateCreationFamille);
+			} else if (cible === 'monstre'){
+				$('#zoneCreation').empty();
+				$('#zoneCreation').append(templateCreationMonstre);
+			}
+		}
+		  /****************************/
+		 /* Communication au serveur */
+		/****************************/
+		$('#zoneCreation').on('click', '#creerMonde', function(event){
+			var aCreer 						= {};
+			aCreer.nom 						= $('#nomMonde').val();
+			socket.emit('aCreerMonde', aCreer);
+			$('#nomMonde').val('');
+		});
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

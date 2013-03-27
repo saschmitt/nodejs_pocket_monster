@@ -5,7 +5,6 @@ Object.extend(global, prototypejs);
 var server								= require("./server");
 var router								= require("./router");
 var requestHandlers						= require("./requestHandlers");
-var messages							= require("./messages");
 
 /* Variables */
 var handle								= {};

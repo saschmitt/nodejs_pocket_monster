@@ -10,10 +10,5 @@ module.exports = Super.addMethods({
 			this.initialiserMonstres();
 		}
 		this.monstres.push(this.leMonstre = new Monstre(0 , leMonstre, leMonstre));
-	},
-	supprimerMonstre : function () {
-		// var liste = this.leMonde.listeFamilles;
-		// var index = liste.indexOf(this);
-		// liste.splice(index,1);
 	}
 });

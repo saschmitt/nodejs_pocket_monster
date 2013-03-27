@@ -1,20 +1,24 @@
-﻿var http								= require("http");
+﻿// Modules
+var http								= require("http");
 var url									= require("url");
 
 // Classes
 var Monde 								= require('./classes/class_Monde');
-
-/* Serveur */
+mondes = [];
+essais();
+  /***********/
+ /* Serveur */
+/***********/
 function index(route, handle){
 	function onRequest(request, response){
-		var pathname						= url.parse(request.url).pathname;
+		var pathname					= url.parse(request.url).pathname;
 		var requeteRecue = "\nRequête reçue pour le chemin ";
 		console.log( (requeteRecue + pathname).cyan );
 		route(handle, pathname, response, request);
 	}
-
-	httpServer = http.createServer(onRequest).listen(80);
-	console.log( ("Démarrage du serveur. Ecoute sur le port 80.").green );
+	var port = process.env.PORT || 80;
+	httpServer = http.createServer(onRequest).listen(port);
+	console.log( ("Démarrage du serveur. Ecoute sur le port " + port + ".").green );
 
 	/***********
 	**
@@ -22,42 +26,55 @@ function index(route, handle){
 	**
 	***********/
 	var io = require('socket.io').listen(httpServer);
-	mondes = [];
-	
-	essais();
-	liste(mondes[0]);
-	liste(mondes[1]);
-	
 	io.sockets.on('connection', function(socket){
+		var contenu = {};
+		
+		
+		
+		liste(mondes[0]);
+		liste(mondes[1]);
+	
 		/*******************
 		**
 		** AFFICHAGE CONTENU
 		**
 		*******************/
-		/* Affichage mondes */
+		  /********************/
+		 /* Affichage mondes */
+		/********************/
 		socket.on('demandeMonde', function(){
-			for (var i = 0; i < mondes.length; i++ ){
-				var idMonde = i;
-				var nomMonde = mondes[i].getNom();
-				socket.emit('recupereMonde', idMonde, nomMonde);
+			if(mondes.length > 0){
+				for (var i = 0; i < mondes.length; i++ ){
+					contenu.id = i;
+					contenu.nom = mondes[i].getNom();
+					socket.emit('recupereMonde', contenu);
+				}
 			}
 		});
 		
-		/* Affichage familles */
+		  /**********************/
+		 /* Affichage familles */
+		/**********************/
 		socket.on('demandeFamille', function(idMonde){
-			for (var i = 0; i < mondes[idMonde].familles.length; i++ ){
-				var idFamille = i;
-				var nomFamille = mondes[idMonde].familles[i].getNom();
-				socket.emit('recupereFamille', idFamille, nomFamille);
+			if(mondes[idMonde].familles){
+				for (var i = 0; i < mondes[idMonde].familles.length; i++ ){
+					contenu.id = i;
+					contenu.nom = mondes[idMonde].familles[i].getNom();
+					socket.emit('recupereFamille', contenu);
+				}
 			}
 		});
 		
-		/* Affichage monstres */
+		  /**********************/
+		 /* Affichage monstres */
+		/**********************/
 		socket.on('demandeMonstre', function(idMonde, idFamille){
-			for (var i = 0; i < mondes[idMonde].familles[idFamille].monstres.length; i++ ){
-				var idMonstre = i;
-				var nomMonstre = mondes[idMonde].familles[idFamille].monstres[i].getNom();
-				socket.emit('recupereMonstre', idMonstre, nomMonstre);
+			if(mondes[idMonde].familles[idFamille].monstres){
+				for (var i = 0; i < mondes[idMonde].familles[idFamille].monstres.length; i++ ){
+					contenu.id = i;
+					contenu.nom = mondes[idMonde].familles[idFamille].monstres[i].getNom();
+					socket.emit('recupereMonstre', contenu);
+				}
 			}
 		});
 		/*********************
@@ -65,49 +82,60 @@ function index(route, handle){
 		** SUPPRESSION CONTENU
 		**
 		*********************/
-		/* Suppression mondes */
-		socket.on('aSupprimerMonde', function(idMonde){
+		  /**********************/
+		 /* Suppression mondes */
+		/**********************/
+		socket.on('aSupprimerMonde', function(aSupprimer){
 			var okDelete = false;
 			
-			for (var i = 0; i < mondes.length; i++){
-				if(mondes[i].getId() == idMonde){
-					mondes.splice(i,1);
-					okDelete = true;
-				}
-				if(okDelete = true){
-					io.sockets.emit('okSupprimerMonde', idMonde);
-				}
+			if(mondes[aSupprimer.idMonde]){
+				mondes.splice(aSupprimer.idMonde,1);
+				okDelete = true;
+			}
+			if(okDelete = true){
+				io.sockets.emit('afficherMonde');
 			}
 		});
 		
-		/* Suppression familles */
-		socket.on('aSupprimerFamille', function(idMonde, idFamille){
+		  /************************/
+		 /* Suppression familles */
+		/************************/
+		socket.on('aSupprimerFamille', function(aSupprimer){
 			var okDelete = false;
 			
-			for (var i = 0; i < mondes[idMonde].familles.length; i++){
-				if(mondes[idMonde].familles[i].getId() == idFamille){
-					mondes[idMonde].familles.splice(i,1);
-					okDelete = true;
-				}
-				if(okDelete = true){
-					io.sockets.emit('okSupprimerFamille', idFamille);
-				}
+			if(mondes[aSupprimer.idMonde].familles[aSupprimer.idFamille]){
+				mondes[aSupprimer.idMonde].familles.splice(aSupprimer.idFamille,1);
+				okDelete = true;
+			}
+			if(okDelete = true){
+				io.sockets.emit('afficherFamille');
 			}
 		});
-		
-		/* Affichage monstres */
-		socket.on('aSupprimerMonstre', function(idMonde, idFamille, idMonstre){
+		  /************************/
+		 /* Suppression monstres */
+		/************************/
+		socket.on('aSupprimerMonstre', function(aSupprimer){
 			var okDelete = false;
 			
-			for (var i = 0; i < mondes[idMonde].familles[idFamille].monstres.length; i++){
-				if(mondes[idMonde].familles[idFamille].monstres[i].getId() == idMonstre){
-					mondes[idMonde].familles[idFamille].monstres.splice(i,1);
-					okDelete = true;
-				}
-				if(okDelete = true){
-					io.sockets.emit('okSupprimerMonstre', idMonstre);
-				}
+			if(mondes[aSupprimer.idMonde].familles[aSupprimer.idFamille].monstres[aSupprimer.idMonstre]){
+				mondes[aSupprimer.idMonde].familles[aSupprimer.idFamille].monstres.splice(aSupprimer.idMonstre,1);
+				okDelete = true;
 			}
+			if(okDelete = true){
+				io.sockets.emit('afficherMonstre');
+			}
+		});
+		/*******************
+		**
+		** CREATION ELEMENTS
+		**
+		*******************/
+		  /**********************/
+		 /* Création de mondes */
+		/**********************/
+		socket.on('aCreerMonde', function(aCreer){
+			mondes.push( new Monde( 0, aCreer.nom, aCreer.nom + '.png' ) );
+			io.sockets.emit('afficherMonde');
 		});
 	});
 }
@@ -132,10 +160,6 @@ function liste(monde){
 		console.log('\n');
 	}
 }
-// console.log(stargate.familles[0].getNom());
-// console.log(stargate.familles[0].monstres[0].getNom());
-
-
 
 
 
@@ -151,7 +175,7 @@ function retourConsole(){
 
 function essais(){
 	mondes.push( new Monde( 0, 'StarWars', 'StarWars.png' ) );
-	mondes.push( new Monde( 1, 'StarGate', 'StarGate.png' ) );
+	mondes.push( new Monde( 0, 'StarGate', 'StarGate.png' ) );
 	
 	
 	mondes[0].creerFamille('Skywalker');
