@@ -29,7 +29,12 @@ function index(route, handle){
 	liste(mondes[1]);
 	
 	io.sockets.on('connection', function(socket){
-		/* Mondes */
+		/*******************
+		**
+		** AFFICHAGE CONTENU
+		**
+		*******************/
+		/* Affichage mondes */
 		socket.on('demandeMonde', function(){
 			for (var i = 0; i < mondes.length; i++ ){
 				var idMonde = i;
@@ -38,7 +43,7 @@ function index(route, handle){
 			}
 		});
 		
-		/* Familles */
+		/* Affichage familles */
 		socket.on('demandeFamille', function(idMonde){
 			for (var i = 0; i < mondes[idMonde].familles.length; i++ ){
 				var idFamille = i;
@@ -47,12 +52,61 @@ function index(route, handle){
 			}
 		});
 		
-		/* Monstres */
+		/* Affichage monstres */
 		socket.on('demandeMonstre', function(idMonde, idFamille){
 			for (var i = 0; i < mondes[idMonde].familles[idFamille].monstres.length; i++ ){
 				var idMonstre = i;
 				var nomMonstre = mondes[idMonde].familles[idFamille].monstres[i].getNom();
 				socket.emit('recupereMonstre', idMonstre, nomMonstre);
+			}
+		});
+		/*********************
+		**
+		** SUPPRESSION CONTENU
+		**
+		*********************/
+		/* Suppression mondes */
+		socket.on('aSupprimerMonde', function(idMonde){
+			var okDelete = false;
+			
+			for (var i = 0; i < mondes.length; i++){
+				if(mondes[i].getId() == idMonde){
+					mondes.splice(i,1);
+					okDelete = true;
+				}
+				if(okDelete = true){
+					io.sockets.emit('okSupprimerMonde', idMonde);
+				}
+			}
+		});
+		
+		/* Suppression familles */
+		socket.on('aSupprimerFamille', function(idMonde, idFamille){
+			var okDelete = false;
+			
+			for (var i = 0; i < mondes[idMonde].familles.length; i++){
+				if(mondes[idMonde].familles[i].getId() == idFamille){
+					mondes[idMonde].familles.splice(i,1);
+					okDelete = true;
+				}
+				if(okDelete = true){
+					io.sockets.emit('okSupprimerFamille', idFamille);
+				}
+			}
+		});
+		
+		/* Affichage monstres */
+		socket.on('aSupprimerMonstre', function(idMonde, idFamille, idMonstre){
+			var okDelete = false;
+			
+			for (var i = 0; i < mondes[idMonde].familles[idFamille].monstres.length; i++){
+				if(mondes[idMonde].familles[idFamille].monstres[i].getId() == idMonstre){
+					mondes[idMonde].familles[idFamille].monstres.splice(i,1);
+					okDelete = true;
+				}
+				if(okDelete = true){
+					io.sockets.emit('okSupprimerMonstre', idMonstre);
+				}
 			}
 		});
 	});
@@ -97,7 +151,7 @@ function retourConsole(){
 
 function essais(){
 	mondes.push( new Monde( 0, 'StarWars', 'StarWars.png' ) );
-	mondes.push( new Monde( 0, 'StarGate', 'StarGate.png' ) );
+	mondes.push( new Monde( 1, 'StarGate', 'StarGate.png' ) );
 	
 	
 	mondes[0].creerFamille('Skywalker');
