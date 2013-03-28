@@ -201,30 +201,36 @@
 		 /* Communication au serveur */
 		/****************************/
 		$('#zoneCreation').on('submit', '#formCreerMonde', function(event){
-			var aCreer 						= {};
-			aCreer.nom 						= $('#nomMonde').val();
-			socket.emit('aCreerMonde', aCreer);
-			$('#nomMonde').val('');
+			if ($('#nomMonde').val() != '') {
+				var aCreer 						= {};
+				aCreer.nom 						= $('#nomMonde').val();
+				socket.emit('aCreerMonde', aCreer);
+				$('#nomMonde').val('');
+			}
 		});
 		$('#zoneCreation').on('submit', '#formCreerFamille', function(event){
 			if ($('#gestionMonde_liste .selection').length > 0){
-				var aCreer 						= {};
-				aCreer.nom 						= $('#nomFamille').val();
-				aCreer.nbMonstresMax 			= $('#nbMonstresMax').val();
-				aCreer.idMonde 					= $('#gestionMonde_liste .selection').prop("id");
-				socket.emit('aCreerFamille', aCreer);
-				$('#nomFamille').val('');
-				$('#nbMonstresMax').val('');
+				if ( ($('#nomFamille').val() != '') && ( isNaN( parseInt($('#nbMonstresMax').val()) ) == false)) {
+					var aCreer 						= {};
+					aCreer.nom 						= $('#nomFamille').val();
+					aCreer.nbMonstresMax 			= $('#nbMonstresMax').val();
+					aCreer.idMonde 					= $('#gestionMonde_liste .selection').prop("id");
+					socket.emit('aCreerFamille', aCreer);
+					$('#nomFamille').val('');
+					$('#nbMonstresMax').val('');
+				}
 			}
 		});
 		$('#zoneCreation').on('submit', '#formCreerMonstre', function(event){
 			if ($('#gestionFamille_liste .selection').length > 0){
-				var aCreer 						= {};
-				aCreer.nom 						= $('#nomMonstre').val();
-				aCreer.idMonde 					= $('#gestionMonde_liste .selection').prop("id");
-				aCreer.idFamille 				= $('#gestionFamille_liste .selection').prop("id");
-				socket.emit('aCreerMonstre', aCreer);
-				$('#nomMonstre').val('');
+				if ($('#nomMonstre').val() != '') {
+					var aCreer 						= {};
+					aCreer.nom 						= $('#nomMonstre').val();
+					aCreer.idMonde 					= $('#gestionMonde_liste .selection').prop("id");
+					aCreer.idFamille 				= $('#gestionFamille_liste .selection').prop("id");
+					socket.emit('aCreerMonstre', aCreer);
+					$('#nomMonstre').val('');
+				}
 			}
 		});
 });
