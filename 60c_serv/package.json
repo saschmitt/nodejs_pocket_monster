@@ -2,7 +2,7 @@
 	"name":"nodejs_pocket_monster",
 	"author":"LeDucSAS",
 	"description":"Littleworlds,familiesandmonstersmanager.",
-	"version":"0.0.9",
+	"version":"0.0.11",
 	"dependencies":{
 		"colors":"0.6.x",
 		"formidable":"1.0.13",

@@ -39,7 +39,8 @@ hr {
 	text-align:center;}
 	.container > div {
 		border-bottom: 1px dashed #876543;
-		cursor: pointer;}
+		cursor: pointer;
+		min-height:20px;}
 		.container > div > p {
 			margin:0;}
 		.selection {

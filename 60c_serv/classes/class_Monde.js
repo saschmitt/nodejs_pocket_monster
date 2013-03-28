@@ -5,6 +5,7 @@ module.exports = Class.create({
 		//
 		// Paramètres
 		//
+		this.familles 					= [],
 		this.nom 						= nom; // string
 		this.image						= image; // bool
 	},
@@ -26,13 +27,13 @@ module.exports = Class.create({
 	getImage : function() 				{return this.image;},
 	
 	// Spécifique
-	creerFamille: function( laFamille ) {
+	creerFamille: function( laFamille, nbMonstresMax ) {
 		if ( ! this.familles){
 			this.initialiserFamilles();
 		}
-		this.familles.push(this.laFamille = new Famille(0 , laFamille, laFamille));
+		this.familles.push(new Famille( laFamille, laFamille, nbMonstresMax ));
 	},
 	initialiserFamilles: function() {
-		this.familles 					= [];
+		// this.familles 					= [];
 	},
 });

@@ -8,25 +8,26 @@
 	/***********************/
 	var contenu 						= {};
 	var templateListeItem 				= '<div class="listeItem" id="{{id}}"><p>{{nom}}</p></div>';
+	var templateFamilleItem 			= '<div class="listeItem" id="{{id}}"><p>{{nom}} ({{nbMonstresActuels}}/{{nbMonstresMax}})</p></div>';
 	var templateCreationMonde 			= '<h2>Création</h2>'
 				+'<form action="#" id="formCreerMonde">'
 					+'Création de Monde.'
 					+'<input type="text" id="nomMonde" placeholder="Entrez le nom" />'
-					+'<input type="button" id="creerMonde" value="Créer" />'
+					+'<input type="submit" id="creerMonde" value="Créer" />'
 				+'</form>';
 	var templateCreationFamille 		= '<h2>Création</h2>'
 				+'<form action="#" id="formCreerFamille">'
 					+'Création de Famille.'
 					+'<input type="text" id="nomFamille" placeholder="Entrez le nom" />'
-					// +'<input type="text" id="nbMonstresMax" placeholder="nb monstres max" />'
-					+'<input type="button" id="creerFamille" value="Créer" />'
+					+'<input type="text" id="nbMonstresMax" placeholder="nbMonstresMax" />'
+					+'<input type="submit" id="creerFamille" value="Créer" />'
 				+'</form>';
 	var templateCreationMonstre 		= '<h2>Création</h2>'
 				+'<form action="#" id="formCreerMonstre">'
 					+'Création de Monstre.'
 					+'<input type="text" id="nomMonstre" placeholder="Entrez le nom" />'
 					// +'<input type="text" id="origineMonstre" placeholder="Origine du monstre" />'
-					+'<input type="button" id="creerFamille" value="Créer" />'
+					+'<input type="submit" id="creerFamille" value="Créer" />'
 				+'</form>';
 	
 	/* Code socket */
@@ -57,7 +58,7 @@
 			recuperer('familles');
 		});
 		socket.on('recupereFamille', function(contenu){
-			$('#gestionFamille_liste').append(Mustache.render(templateListeItem, contenu));
+			$('#gestionFamille_liste').append(Mustache.render(templateFamilleItem, contenu));
 		});
 		
 		  /**************************/
@@ -105,7 +106,7 @@
 		 /* Supprimer monde */
 		/*******************/
 		$('#supprimerMonde').on('click', function(event){
-			if ($('#gestionMonde_liste .selection')){
+			if ($('#gestionMonde_liste .selection').length > 0){
 				var aSupprimer 					= {};
 				aSupprimer.idMonde 				= $('#gestionMonde_liste .selection').prop("id");
 				socket.emit('aSupprimerMonde', aSupprimer);
@@ -115,7 +116,7 @@
 		 /* Supprimer famille */
 		/*********************/
 		$('#supprimerFamille').on('click', function(event){
-			if ($('#gestionFamille_liste .selection')){
+			if ($('#gestionFamille_liste .selection').length > 0){
 				var aSupprimer 					= {};
 				aSupprimer.idMonde 				= $('#gestionMonde_liste .selection').prop("id");
 				aSupprimer.idFamille 			= $('#gestionFamille_liste .selection').prop("id");
@@ -126,7 +127,7 @@
 		 /* Supprimer monstre */
 		/*********************/
 		$('#supprimerMonstre').on('click', function(event){
-			if ($('#gestionMonstre_liste .selection')){
+			if ($('#gestionMonstre_liste .selection').length > 0){
 				var aSupprimer 					= {};
 				aSupprimer.idMonde 				= $('#gestionMonde_liste .selection').prop("id");
 				aSupprimer.idFamille 			= $('#gestionFamille_liste .selection').prop("id");
@@ -206,18 +207,24 @@
 			$('#nomMonde').val('');
 		});
 		$('#zoneCreation').on('submit', '#formCreerFamille', function(event){
-			var aCreer 						= {};
-			aCreer.nom 						= $('#nomFamille').val();
-			aCreer.idMonde 					= $('#gestionMonde_liste .selection').prop("id");
-			socket.emit('aCreerFamille', aCreer);
-			$('#nomFamille').val('');
+			if ($('#gestionMonde_liste .selection').length > 0){
+				var aCreer 						= {};
+				aCreer.nom 						= $('#nomFamille').val();
+				aCreer.nbMonstresMax 			= $('#nbMonstresMax').val();
+				aCreer.idMonde 					= $('#gestionMonde_liste .selection').prop("id");
+				socket.emit('aCreerFamille', aCreer);
+				$('#nomFamille').val('');
+				$('#nbMonstresMax').val('');
+			}
 		});
 		$('#zoneCreation').on('submit', '#formCreerMonstre', function(event){
-			var aCreer 						= {};
-			aCreer.nom 						= $('#nomMonstre').val();
-			aCreer.idMonde 					= $('#gestionMonde_liste .selection').prop("id");
-			aCreer.idFamille 				= $('#gestionFamille_liste .selection').prop("id");
-			socket.emit('aCreerMonstre', aCreer);
-			$('#nomMonstre').val('');
+			if ($('#gestionFamille_liste .selection').length > 0){
+				var aCreer 						= {};
+				aCreer.nom 						= $('#nomMonstre').val();
+				aCreer.idMonde 					= $('#gestionMonde_liste .selection').prop("id");
+				aCreer.idFamille 				= $('#gestionFamille_liste .selection').prop("id");
+				socket.emit('aCreerMonstre', aCreer);
+				$('#nomMonstre').val('');
+			}
 		});
 });

@@ -1,4 +1,6 @@
-﻿// Modules
+﻿retourConsole();
+
+// Modules
 var http								= require("http");
 var url									= require("url");
 
@@ -61,8 +63,10 @@ function index(route, handle){
 		socket.on('demandeFamille', function(idMonde){
 			if(mondes[idMonde].familles){
 				for (var i = 0; i < mondes[idMonde].familles.length; i++ ){
-					contenu.id = i;
-					contenu.nom = mondes[idMonde].familles[i].getNom();
+					contenu.id 					= i;
+					contenu.nom 				= mondes[idMonde].familles[i].getNom();
+					contenu.nbMonstresActuels 	= mondes[idMonde].familles[i].getNbMonstresActuel();
+					contenu.nbMonstresMax 		= mondes[idMonde].familles[i].getNbMonstresMax();
 					socket.emit('recupereFamille', contenu);
 				}
 			}
@@ -141,12 +145,12 @@ function index(route, handle){
 			io.sockets.emit('afficherMonde');
 		});
 		socket.on('aCreerFamille', function(aCreer){
-			mondes[aCreer.idMonde].creerFamille(aCreer.nom);
+			mondes[aCreer.idMonde].creerFamille(aCreer.nom, aCreer.nbMonstresMax);
 			io.sockets.emit('afficherFamille');
 		});
 		socket.on('aCreerMonstre', function(aCreer){
 			mondes[aCreer.idMonde].familles[aCreer.idFamille].creerMonstre(aCreer.nom);
-			io.sockets.emit('afficherMonstre');
+			io.sockets.emit('afficherFamille');
 		});
 	});
 }
@@ -178,7 +182,7 @@ function retourConsole(){
 	console.log('\n\n\n');
 	console.log('----------------------'.green);
 	console.log('   ║'.green);
-	console.log('   ║'.green + '    ESSAIS Classes');
+	console.log('   ║'.green + ' Pocket Monster');
 	console.log('   ║'.green);
 	console.log('----------------------'.green);
 	console.log('\n\n\n');
@@ -187,21 +191,20 @@ function retourConsole(){
 function essais(){
 	mondes.push( new Monde( 'StarWars', 'StarWars.png' ) );
 	mondes.push( new Monde( 'StarGate', 'StarGate.png' ) );
-	
-	
-	mondes[0].creerFamille('Skywalker');
+
+	mondes[0].creerFamille('Skywalker', 10);
 	mondes[0].familles[0].creerMonstre('Anakin');
 	mondes[0].familles[0].creerMonstre('Leia');
 	mondes[0].familles[0].creerMonstre('Luke');
-
-	mondes[0].creerFamille('Solo');
+	
+	mondes[0].creerFamille('Solo', 10);
 	mondes[0].familles[1].creerMonstre('Yan');
 
-	mondes[0].creerFamille('Pellaeon');
+	mondes[0].creerFamille('Pellaeon', 10);
 	mondes[0].familles[2].creerMonstre('Gilad');
 
-	mondes[1].creerFamille('O\'Neill');
+	mondes[1].creerFamille('O\'Neill', 10);
 	mondes[1].familles[0].creerMonstre('Jack');
-	mondes[1].creerFamille('Carter');
+	mondes[1].creerFamille('Carter', 10);
 	mondes[1].familles[1].creerMonstre('Samantha');
 }
