@@ -5,7 +5,12 @@ var url									= require("url");
 // Classes
 var Monde 								= require('./classes/class_Monde');
 mondes = [];
+
 essais();
+liste(mondes[0]);
+liste(mondes[1]);
+
+
   /***********/
  /* Serveur */
 /***********/
@@ -31,8 +36,6 @@ function index(route, handle){
 		
 		
 		
-		liste(mondes[0]);
-		liste(mondes[1]);
 	
 		/*******************
 		**
@@ -134,8 +137,16 @@ function index(route, handle){
 		 /* Création de mondes */
 		/**********************/
 		socket.on('aCreerMonde', function(aCreer){
-			mondes.push( new Monde( 0, aCreer.nom, aCreer.nom + '.png' ) );
+			mondes.push( new Monde( aCreer.nom, aCreer.nom + '.png' ) );
 			io.sockets.emit('afficherMonde');
+		});
+		socket.on('aCreerFamille', function(aCreer){
+			mondes[aCreer.idMonde].creerFamille(aCreer.nom);
+			io.sockets.emit('afficherFamille');
+		});
+		socket.on('aCreerMonstre', function(aCreer){
+			mondes[aCreer.idMonde].familles[aCreer.idFamille].creerMonstre(aCreer.nom);
+			io.sockets.emit('afficherMonstre');
 		});
 	});
 }
@@ -174,8 +185,8 @@ function retourConsole(){
 }
 
 function essais(){
-	mondes.push( new Monde( 0, 'StarWars', 'StarWars.png' ) );
-	mondes.push( new Monde( 0, 'StarGate', 'StarGate.png' ) );
+	mondes.push( new Monde( 'StarWars', 'StarWars.png' ) );
+	mondes.push( new Monde( 'StarGate', 'StarGate.png' ) );
 	
 	
 	mondes[0].creerFamille('Skywalker');
